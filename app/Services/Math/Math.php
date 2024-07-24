@@ -6,19 +6,27 @@ final readonly class Math
 {
     public function calculate(string $expression): float
     {
-        $tokens = $this->tokenize($expression);
+        $tokens = $this->tokenize(
+            $this->sanitize($expression)
+        );
 
         return number_format($this->evaluateRPN($this->infixToRPN($tokens)), 2);
     }
 
+    public function sanitize(string $expression): string
+    {
+        return preg_replace('/\s+/', '', $expression);
+    }
+
     public function tokenize(string $expression): array
     {
-        return preg_split(
-            "/([\+\-\*\/\(\)])/",
-            preg_replace("/\s+/", '', $expression),
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
-        );
+        // Regular expression to match numbers (including signed), operators, and parentheses
+        $pattern = "/(\d+|(?<!\d)-\d+|[\+\-\*\/\(\)])/";
+
+        // Use preg_match_all to tokenize the expression
+        preg_match_all($pattern, $expression, $matches);
+
+        return $matches[0];
     }
 
     public function infixToRPN(array $tokens): array

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\Math\Facade\Math;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CalculateRequest extends FormRequest
@@ -17,11 +18,6 @@ class CalculateRequest extends FormRequest
         ];
     }
 
-    public function sanitized(): string
-    {
-        return preg_replace('/\s+/', '', $this->input('calculation'));
-    }
-
     public function pattern():string
     {
         return self::REGEX;
@@ -29,6 +25,6 @@ class CalculateRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->replace(['calculation' => $this->sanitized()]);
+        $this->replace(['calculation' => Math::sanitize($this->input('calculation'))]);
     }
 }
