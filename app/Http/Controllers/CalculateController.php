@@ -15,6 +15,6 @@ class CalculateController extends Controller
         return CalculationData::from([
             'expression' => $expression,
             'result' => Math::calculate($expression),
-        ])->wrap('data');
+        ]);
     }
 }
