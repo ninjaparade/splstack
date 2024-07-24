@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class CalculateRequest extends FormRequest
+{
+    public final const string REGEX = '/\(\d+[\+\-\*\/]\d+\)|\(\(\d+[\+\-\*\/]\d+\)[\+\-\*\/]\d+\)/';
+
+    public function rules(): array
+    {
+        $regex = self::REGEX;
+
+        return [
+            'calculation' => ['required', 'string', "regex:{$regex}"],
+        ];
+    }
+
+    public function sanitized(): string
+    {
+        return preg_replace('/\s+/', '', $this->input('calculation'));
+    }
+
+    public function pattern():string
+    {
+        return self::REGEX;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->replace(['calculation' => $this->sanitized()]);
+    }
+}
