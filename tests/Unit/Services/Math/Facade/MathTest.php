@@ -22,7 +22,6 @@ final class ExternalDataProvider
     public static function mathExpressions(): array
     {
         return [
-
             ['(5+5)', 10.0],
             ['5+5', 10.0],
             ['((5+5)* 2)', 20.0],
@@ -37,6 +36,9 @@ final class ExternalDataProvider
             ['(5-5)', 0.0],
             ['(5-50)', -45.0],
             ['((5-50)* -1)', 45.0],
+            ['((5* -50)* -1)', 250.0],
+            ['((5* -50)* 1)', -250.0],
+            ['((5* -50)* 1) + ((5* -50)* -1)', 0.0],
         ];
     }
 }
