@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Data\CalculationData;
 use App\Http\Requests\CalculateRequest;
+use App\Models\Calculation;
 use App\Services\Math\Facade\Math;
 
 class CalculateController extends Controller
@@ -12,9 +13,13 @@ class CalculateController extends Controller
     {
         $expression = $request->validated('calculation');
 
-        return CalculationData::from([
+        $response = CalculationData::from([
             'expression' => $expression,
             'result' => Math::calculate($expression),
         ]);
+
+        Calculation::create($response->toArray());
+
+        return $response;
     }
 }

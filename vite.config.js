@@ -2,12 +2,46 @@ import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
 import { run } from 'vite-plugin-run'
 import Unimport from 'unimport/unplugin'
+import AutoImport from 'unplugin-auto-import/vite'
+import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [
     laravel({
       input: ['resources/js/app.ts'],
       refresh: true,
+    }),
+    vue({
+      template: {
+        transformAssetUrls: {
+          base: null,
+
+          includeAbsolute: false,
+        },
+      },
+    }),
+    AutoImport({
+      include: [
+        /\.vue$/,
+        /\.vue\?vue/, // .vue
+      ],
+      imports: [
+        {
+          from: 'vue',
+          imports: ['Component', 'ComponentPublicInstance', 'ComputedRef', 'ExtractDefaultPropTypes', 'ExtractPropTypes', 'ExtractPublicPropTypes', 'InjectionKey', 'PropType', 'Ref', 'VNode', 'WritableComputedRef'],
+
+        },
+        {
+          from: '@vueuse/core',
+
+          imports: ['onKeyStroke'],
+        },
+        {
+          from: '@inertiajs/vue3',
+          imports: ['useForm', 'Head', 'Link'],
+          type: true,
+        },
+      ],
     }),
     Unimport.vite({
       imports: [

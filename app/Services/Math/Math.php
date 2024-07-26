@@ -2,6 +2,8 @@
 
 namespace App\Services\Math;
 
+use SplStack;
+
 final readonly class Math
 {
     public function calculate(string $expression): float
@@ -20,19 +22,18 @@ final readonly class Math
 
     public function tokenize(string $expression): array
     {
-        // Regular expression to match numbers (including signed), operators, and parentheses
-        $pattern = "/(\d+|(?<!\d)-\d+|[\+\-\*\/\(\)])/";
-
-        // Use preg_match_all to tokenize the expression
-        preg_match_all($pattern, $expression, $matches);
-
-        return $matches[0];
+        return preg_split(
+            "/([\+\-\*\/\(\)])/",
+            preg_replace("/\s+/", '', $expression),
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
     }
 
     public function infixToRPN(array $tokens): array
     {
         $output = [];
-        $operators = new \SplStack();
+        $operators = new SplStack();
         $precedence = ['+' => 1, '-' => 1, '*' => 2, '/' => 2];
 
         foreach ($tokens as $token) {
@@ -66,7 +67,7 @@ final readonly class Math
 
     public function evaluateRPN(array $rpn): float
     {
-        $stack = new \SplStack();
+        $stack = new SplStack();
 
         foreach ($rpn as $token) {
             if (is_numeric($token)) {
